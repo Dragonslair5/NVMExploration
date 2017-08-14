@@ -1,0 +1,128 @@
+--- art.c	2017-08-14 16:34:33.089037549 -0300
++++ art_nvmalloc.c	2017-08-14 16:40:20.303264993 -0300
+@@ -1,4 +1,4 @@
+-#include <stdlib.h>
++#include "nvmalloc.h"
+ #include <string.h>
+ #include <strings.h>
+ #include <stdio.h>
+@@ -28,16 +28,16 @@
+     art_node* n;
+     switch (type) {
+         case NODE4:
+-            n = (art_node*)calloc(1, sizeof(art_node4));
++            n = (art_node*)pcalloc(1, sizeof(art_node4));
+             break;
+         case NODE16:
+-            n = (art_node*)calloc(1, sizeof(art_node16));
++            n = (art_node*)pcalloc(1, sizeof(art_node16));
+             break;
+         case NODE48:
+-            n = (art_node*)calloc(1, sizeof(art_node48));
++            n = (art_node*)pcalloc(1, sizeof(art_node48));
+             break;
+         case NODE256:
+-            n = (art_node*)calloc(1, sizeof(art_node256));
++            n = (art_node*)pcalloc(1, sizeof(art_node256));
+             break;
+         default:
+             abort();
+@@ -63,7 +63,7 @@
+ 
+     // Special case leafs
+     if (IS_LEAF(n)) {
+-        free(LEAF_RAW(n));
++        pfree(LEAF_RAW(n));
+         return;
+     }
+ 
+@@ -110,7 +110,7 @@
+     }
+ 
+     // Free ourself on the way up
+-    free(n);
++    pfree(n);
+ }
+ 
+ /**
+@@ -355,7 +355,7 @@
+ }
+ 
+ static art_leaf* make_leaf(const unsigned char *key, int key_len, void *value) {
+-    art_leaf *l = (art_leaf*)calloc(1, sizeof(art_leaf)+key_len);
++    art_leaf *l = (art_leaf*)pcalloc(1, sizeof(art_leaf)+key_len);
+     l->value = value;
+     l->key_len = key_len;
+     memcpy(l->key, key, key_len);
+@@ -400,7 +400,7 @@
+         }
+         copy_header((art_node*)new_node, (art_node*)n);
+         *ref = (art_node*)new_node;
+-        free(n);
++        pfree(n);
+         add_child256(new_node, ref, c, child);
+     }
+ }
+@@ -468,7 +468,7 @@
+         }
+         copy_header((art_node*)new_node, (art_node*)n);
+         *ref = (art_node*)new_node;
+-        free(n);
++        pfree(n);
+         add_child48(new_node, ref, c, child);
+     }
+ }
+@@ -500,7 +500,7 @@
+                 sizeof(unsigned char)*n->n.num_children);
+         copy_header((art_node*)new_node, (art_node*)n);
+         *ref = (art_node*)new_node;
+-        free(n);
++        pfree(n);
+         add_child16(new_node, ref, c, child);
+     }
+ }
+@@ -664,7 +664,7 @@
+                 pos++;
+             }
+         }
+-        free(n);
++        pfree(n);
+     }
+ }
+ 
+@@ -688,7 +688,7 @@
+                 child++;
+             }
+         }
+-        free(n);
++        pfree(n);
+     }
+ }
+ 
+@@ -704,7 +704,7 @@
+         copy_header((art_node*)new_node, (art_node*)n);
+         memcpy(new_node->keys, n->keys, 4);
+         memcpy(new_node->children, n->children, 4*sizeof(void*));
+-        free(n);
++        pfree(n);
+     }
+ }
+ 
+@@ -735,7 +735,7 @@
+             child->partial_len += n->n.partial_len + 1;
+         }
+         *ref = child;
+-        free(n);
++        pfree(n);
+     }
+ }
+ 
+@@ -809,7 +809,7 @@
+     if (l) {
+         t->size--;
+         void *old = l->value;
+-        free(l);
++        pfree(l);
+         return old;
+     }
+     return NULL;

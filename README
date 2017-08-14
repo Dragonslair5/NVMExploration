@@ -1,0 +1,12 @@
+
+=============================
+
+git clone --recursive https://github.com/chaconinc/MainProject
+
+ou
+
+git submodule init
+git submodule update
+
+
+============================
