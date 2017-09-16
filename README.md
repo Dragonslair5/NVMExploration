@@ -1,6 +1,7 @@
 # Master's degree artifacts
 
 In this repository there are artifacts from the master's degree dissertation from Maurício Gagliardi Palma, that takes the following title:
+
 __Simulation-driven exploration of NVM as a substitute for DRAM in the main memory__
 
 Currently there are only the benchmarks that were used. I intent to put the pdf from the dissertation here as soon as the final version is over (after the defense and potential corrections).
